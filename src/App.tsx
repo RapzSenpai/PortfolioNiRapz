@@ -6,7 +6,6 @@ import { Certifications } from "@/components/certifications"
 import { Education } from "@/components/education"
 import { GitHubActivity } from "@/components/github-activity"
 import { Contact } from "@/components/contact"
-import { Nav } from "@/components/nav"
 import { Footer } from "@/components/footer"
 import { KitchenSink } from "@/components/kitchen-sink"
 import { useRevealOnScroll } from "@/lib/reveal"
@@ -22,7 +21,6 @@ export function App() {
       <a className="skip-link" href="#content">
         Skip to content
       </a>
-      <Nav />
       <main id="content">
         {showKitchenSink ? (
           <KitchenSink />

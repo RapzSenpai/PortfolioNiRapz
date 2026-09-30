@@ -269,31 +269,6 @@
   }
 }
 
-/* Plan 7 nav. Under 640px the anchor row scrolls horizontally with no
-     visible scrollbar and a fade at each edge, so it reads as a strip rather
-     than as something cut off. At 640px and up the row fits, so the fade is
-     dropped rather than left fading into empty space. */
-.nav-scroll {
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.nav-scroll::-webkit-scrollbar {
-  display: none;
-}
-
-@media (max-width: 639px) {
-  .nav-scroll {
-    mask-image: linear-gradient(
-      to right,
-      transparent,
-      #000 16px,
-      #000 calc(100% - 16px),
-      transparent
-    );
-  }
-}
-
 /* Plan 8 section reveal. The hidden state is scoped to [data-js] on <html>,
    which the blocking script in index.html sets before first paint. Without
    JS the attribute is absent, so every section renders at its final position
@@ -315,31 +290,6 @@
 @media (prefers-reduced-motion: reduce) {
   [data-js] [data-reveal] {
     transform: none;
-  }
-}
-
-/* Plan 8 nav indicator: opacity only. A bar that slides between anchors has
-   to animate width or scaleX, and width is a layout property while scaleX
-   distorts the stroke. Fading each anchor's own underline keeps it on the GPU
-   and still reads as the active section moving. */
-.nav-link-underline {
-  position: absolute;
-  right: 0.5rem;
-  bottom: 0;
-  left: 0.5rem;
-  height: 1px;
-  background-color: var(--brand);
-  opacity: 0;
-  transition: opacity 200ms var(--ease-out);
-}
-
-.nav-link-underline[data-active="true"] {
-  opacity: 1;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .nav-link-underline {
-    transition-duration: 0.01ms;
   }
 }
 

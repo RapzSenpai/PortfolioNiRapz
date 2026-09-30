@@ -1,0 +1,23 @@
+// The icon lookup is a plain map rather than a glob so a name with no logo,
+// like GitHub Actions, is an explicit miss instead of a silently absent file.
+export const TECH_ICONS: Record<string, string> = {
+  TypeScript: "typescript.svg",
+  JavaScript: "javascript.svg",
+  Rust: "rust.svg",
+  React: "react.svg",
+  Svelte: "svelte.svg",
+  "Tailwind CSS": "tailwind-css.svg",
+  HTML: "html.svg",
+  CSS: "css.svg",
+  "Node.js": "node-js.svg",
+  Supabase: "supabase.svg",
+  Firebase: "firebase.svg",
+  "Cloudflare Workers": "cloudflare-workers.svg",
+  Vite: "vite.svg",
+  npm: "npm.svg",
+  Git: "git.svg",
+  Vercel: "vercel.svg",
+  Cloudflare: "cloudflare.svg",
+  Figma: "figma.svg",
+  Canva: "canva.svg",
+}

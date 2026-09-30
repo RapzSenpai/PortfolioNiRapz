@@ -47,7 +47,7 @@ export const profile: Profile = {
     },
   ],
   email: "lorianoalibrado@gmail.com",
-  cta: "Open to internships, junior roles, and freelance work.",
+  cta: "Open to opportunities and roles.",
   photo: {
     src: "TODO(content)",
     alt: "Portrait of Loriano Librado Jr.",

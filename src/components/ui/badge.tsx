@@ -14,8 +14,9 @@ const badgeVariants = cva(
           "bg-secondary text-secondary-foreground [a]:pointer-fine:hover:bg-secondary/80",
         destructive:
           "bg-destructive/10 text-destructive focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:focus-visible:ring-destructive/40 [a]:pointer-fine:hover:bg-destructive/20",
-        // Plan 4.4: the chip is text only, no logos, and non-interactive, so
-        // outline drops shadcn's hover rules rather than adding its own.
+        // Plan 4.4: the chip is non-interactive, so outline drops shadcn's hover
+        // rules rather than adding its own. It can carry a leading icon, which
+        // the stack chips use.
         outline: "border-border bg-secondary text-fg-secondary",
         ghost:
           "pointer-fine:hover:bg-muted pointer-fine:hover:text-muted-foreground dark:pointer-fine:hover:bg-muted/50",

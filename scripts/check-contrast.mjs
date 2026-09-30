@@ -164,6 +164,23 @@ function check(pairs, min) {
 check(PAIRS, MIN)
 check(NON_TEXT_PAIRS, NON_TEXT_MIN)
 
+/**
+ * Deliberately NOT checked: opacity on an element that inherits its colour.
+ *
+ * `text-fg-muted opacity-80` looks like a passing pair here, because the checks
+ * above compare token values and the opacity is applied afterwards. On a child
+ * span the colour is inherited from the parent, so there is no token on the
+ * element carrying the opacity and no static rule can see the composite.
+ *
+ * A same-element rule was written and mutation-tested: it passed a real
+ * `opacity-80` on an inherited colour, because that is exactly the case it
+ * cannot see. Rejected rather than kept as a false sense of coverage.
+ *
+ * Lighthouse's color-contrast audit measures the rendered pixels and does catch
+ * it, so `check:audit` is the gate for this. Do not dim text with opacity; pick
+ * a lighter token instead.
+ */
+
 if (failures.length > 0) {
   console.error(`contrast check failed, ${failures.length} problem(s):`)
   for (const line of failures) {

@@ -33,8 +33,10 @@ export function Contact() {
     }
   }
 
+  // GitHub is filtered out on purpose: the hero already links the account, and
+  // a second identical link in the last section of the page is noise.
   const socials = profile.socials.filter(
-    (social) => !isPlaceholder(social.href)
+    (social) => !isPlaceholder(social.href) && social.platform !== "github"
   )
 
   return (
