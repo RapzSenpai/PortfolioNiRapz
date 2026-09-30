@@ -2,9 +2,100 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>vite-app</title>
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#050505" />
+
+    <!-- SITE_URL: the origin this site is deployed to. Hardcoded in 5 places in
+         this file (canonical, og:url, og:image, twitter:image, JSON-LD url) plus
+         public/sitemap.xml, because none of them can read a build-time variable
+         here. Replace every one of them together:
+         grep -rn "portfolionirapz.vercel.app" src index.html public
+         A partial replacement leaves social previews or the sitemap pointing at
+         a host that does not exist. -->
+    <link rel="canonical" href="https://portfolionirapz.vercel.app/" />
+
+    <meta
+      name="description"
+      content="Loriano Librado Jr. — IT support and full-stack developer. IT student building web apps, integrating AI tooling, and fixing what is broken. Open to internships, junior roles, and freelance work."
+    />
+    <meta name="author" content="Loriano Librado Jr." />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Loriano Librado Jr." />
+    <meta property="og:url" content="https://portfolionirapz.vercel.app/" />
+    <meta
+      property="og:title"
+      content="Loriano Librado Jr. — Full-stack Developer &amp; IT Support"
+    />
+    <meta
+      property="og:description"
+      content="IT support and full-stack developer. IT student building web apps, integrating AI tooling, and fixing what is broken."
+    />
+    <meta property="og:image" content="https://portfolionirapz.vercel.app/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Loriano Librado Jr. — IT support and full-stack developer"
+    />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Loriano Librado Jr. — Full-stack Developer &amp; IT Support"
+    />
+    <meta
+      name="twitter:description"
+      content="IT support and full-stack developer. IT student building web apps, integrating AI tooling, and fixing what is broken."
+    />
+    <meta name="twitter:image" content="https://portfolionirapz.vercel.app/og.png" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Loriano Librado Jr.",
+        "url": "https://portfolionirapz.vercel.app/",
+        "jobTitle": "Full-stack Developer and IT Support",
+        "description": "IT student and full-stack developer building web apps, integrating AI tooling, and fixing what is broken.",
+        "email": "mailto:lorianoalibrado@gmail.com",
+        "sameAs": ["https://github.com/RapzSenpai"]
+      }
+    </script>
+
+    <title>Loriano Librado Jr. — Full-stack Developer &amp; IT Support</title>
+    <script>
+      // Plan 5: resolve and apply the theme before first paint. Running this in
+      // head as a blocking script is what stops the flash; React picking the
+      // theme up afterwards is too late to matter visually.
+      ;(function () {
+        var meta = document.querySelector('meta[name="theme-color"]')
+        var resolved = "dark"
+        try {
+          var stored = localStorage.getItem("theme")
+          if (stored === "light" || stored === "dark") {
+            resolved = stored
+          } else if (window.matchMedia("(prefers-color-scheme: light)").matches) {
+            resolved = "light"
+          }
+        } catch (error) {
+          // Private mode or storage blocked: fall through to the dark default.
+        }
+        document.documentElement.classList.toggle("dark", resolved === "dark")
+        // Plan 8: the section reveal's hidden state is scoped to this
+        // attribute, so sections are only ever hidden when JS is running and
+        // able to un-hide them. Set here, before first paint, so the reveal
+        // never has to hide-then-show on mount.
+        document.documentElement.dataset.js = "true"
+        if (meta) {
+          meta.setAttribute("content", resolved === "dark" ? "#050505" : "#f3f2ee")
+        }
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>

@@ -1,130 +1,398 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import "@fontsource-variable/geist";
+@import "@fontsource-variable/jetbrains-mono";
 
 @custom-variant dark (&:is(.dark *));
 
+/* Plan 6: hover effects only where there is a real pointer. Without this a tap
+   on a touch device leaves the hover state stuck on. */
+@custom-variant pointer-fine (@media (hover: hover) and (pointer: fine));
+
 @theme inline {
-    --font-heading: var(--font-sans);
-    --font-sans: 'Geist Variable', sans-serif;
-    --color-sidebar-ring: var(--sidebar-ring);
-    --color-sidebar-border: var(--sidebar-border);
-    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-    --color-sidebar-accent: var(--sidebar-accent);
-    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-    --color-sidebar-primary: var(--sidebar-primary);
-    --color-sidebar-foreground: var(--sidebar-foreground);
-    --color-sidebar: var(--sidebar);
-    --color-chart-5: var(--chart-5);
-    --color-chart-4: var(--chart-4);
-    --color-chart-3: var(--chart-3);
-    --color-chart-2: var(--chart-2);
-    --color-chart-1: var(--chart-1);
-    --color-ring: var(--ring);
-    --color-input: var(--input);
-    --color-border: var(--border);
-    --color-destructive: var(--destructive);
-    --color-accent-foreground: var(--accent-foreground);
-    --color-accent: var(--accent);
-    --color-muted-foreground: var(--muted-foreground);
-    --color-muted: var(--muted);
-    --color-secondary-foreground: var(--secondary-foreground);
-    --color-secondary: var(--secondary);
-    --color-primary-foreground: var(--primary-foreground);
-    --color-primary: var(--primary);
-    --color-popover-foreground: var(--popover-foreground);
-    --color-popover: var(--popover);
-    --color-card-foreground: var(--card-foreground);
-    --color-card: var(--card);
-    --color-foreground: var(--foreground);
-    --color-background: var(--background);
-    --radius-sm: calc(var(--radius) * 0.6);
-    --radius-md: calc(var(--radius) * 0.8);
-    --radius-lg: var(--radius);
-    --radius-xl: calc(var(--radius) * 1.4);
-    --radius-2xl: calc(var(--radius) * 1.8);
-    --radius-3xl: calc(var(--radius) * 2.2);
-    --radius-4xl: calc(var(--radius) * 2.6);
+  --font-sans: "JetBrains Mono Variable", ui-monospace, monospace;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
+
+  /* Type scale, plan 3.1. Anything that maps to a Tailwind default
+     (16px item title) is left alone. */
+  --text-name: clamp(1.75rem, 4vw, 2.5rem);
+  --text-name--line-height: 1.15;
+  --text-name--letter-spacing: -0.02em;
+  --text-name--font-weight: 700;
+
+  --text-label: 0.8125rem;
+  --text-label--line-height: 1;
+  --text-label--letter-spacing: 0.08em;
+
+  --text-body: 0.9375rem;
+  --text-body--line-height: 1.7;
+
+  /* Motion, plan 6. --ease-out deliberately overrides Tailwind's default
+     ease-out so no UI transition can reach for a generic curve. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+
+  --color-surface-3: var(--surface-3);
+  --color-border-strong: var(--border-strong);
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-fg-secondary: var(--fg-secondary);
+  --color-fg-muted: var(--fg-muted);
+
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+
+  /* Namespace must be --transition-duration-*, not --duration-*: Tailwind
+     resolves the duration-* utility against that namespace, so a --duration-
+     key silently generates nothing and every duration-micro class falls back
+     to the 150ms default. The raw values live on :root below, because
+     @theme inline does not emit its own variables. */
+  --transition-duration-micro: var(--duration-micro);
+  --transition-duration-reveal: var(--duration-reveal);
 }
 
 :root {
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.145 0 0);
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.145 0 0);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.145 0 0);
-    --primary: oklch(0.205 0 0);
-    --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.97 0 0);
-    --secondary-foreground: oklch(0.205 0 0);
-    --muted: oklch(0.97 0 0);
-    --muted-foreground: oklch(0.556 0 0);
-    --accent: oklch(0.97 0 0);
-    --accent-foreground: oklch(0.205 0 0);
-    --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.922 0 0);
-    --input: oklch(0.922 0 0);
-    --ring: oklch(0.708 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --radius: 0.625rem;
-    --sidebar: oklch(0.985 0 0);
-    --sidebar-foreground: oklch(0.145 0 0);
-    --sidebar-primary: oklch(0.205 0 0);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.97 0 0);
-    --sidebar-accent-foreground: oklch(0.205 0 0);
-    --sidebar-border: oklch(0.922 0 0);
-    --sidebar-ring: oklch(0.708 0 0);
+  color-scheme: light;
+
+  /* Motion, plan 6. Single source for both the duration-* utilities (via the
+     --transition-duration-* theme keys) and the hand-written reveal and nav
+     underline rules further down. */
+  --duration-micro: 140ms;
+  --duration-reveal: 240ms;
+
+  --background: #f3f2ee;
+  --foreground: #18181b;
+  --card: #ebeae5;
+  --card-foreground: #18181b;
+  --popover: #ebeae5;
+  --popover-foreground: #18181b;
+  --primary: #18181b;
+  --primary-foreground: #f3f2ee;
+  --secondary: #e3e1db;
+  --secondary-foreground: #44444c;
+  --muted: #e3e1db;
+  --muted-foreground: #5b5b65;
+  --accent: #e3e1db;
+  --accent-foreground: #18181b;
+  --destructive: #b42318;
+  --border: #d4d1c9;
+  --input: #d4d1c9;
+  --ring: #0b665e;
+
+  --surface-3: #d9d7d0;
+  --border-strong: #b9b5ab;
+  --brand: #0b665e;
+  --brand-foreground: #f3f2ee;
+  --fg-secondary: #44444c;
+  --fg-muted: #5b5b65;
+
+  --radius: 0.375rem;
+
+  --chart-1: #0b665e;
+  --chart-2: #5b5b65;
+  --chart-3: #b9b5ab;
+  --chart-4: #d4d1c9;
+  --chart-5: #44444c;
+  --sidebar: #ebeae5;
+  --sidebar-foreground: #18181b;
+  --sidebar-primary: #18181b;
+  --sidebar-primary-foreground: #f3f2ee;
+  --sidebar-accent: #e3e1db;
+  --sidebar-accent-foreground: #18181b;
+  --sidebar-border: #d4d1c9;
+  --sidebar-ring: #0b665e;
 }
 
 .dark {
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.205 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.205 0 0);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.922 0 0);
-    --primary-foreground: oklch(0.205 0 0);
-    --secondary: oklch(0.269 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.708 0 0);
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
-    --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.556 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --sidebar: oklch(0.205 0 0);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.269 0 0);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.556 0 0);
+  color-scheme: dark;
+
+  --background: #050505;
+  --foreground: #f4f4f5;
+  --card: #0c0c0e;
+  --card-foreground: #f4f4f5;
+  --popover: #0c0c0e;
+  --popover-foreground: #f4f4f5;
+  --primary: #f4f4f5;
+  --primary-foreground: #050505;
+  --secondary: #131316;
+  --secondary-foreground: #b8b8c0;
+  --muted: #131316;
+  --muted-foreground: #8c8c96;
+  --accent: #131316;
+  --accent-foreground: #f4f4f5;
+  --destructive: #f87171;
+  --border: #26262b;
+  --input: #26262b;
+  --ring: #5eead4;
+
+  --surface-3: #1b1b1f;
+  --border-strong: #3a3a41;
+  --brand: #5eead4;
+  --brand-foreground: #04110e;
+  --fg-secondary: #b8b8c0;
+  --fg-muted: #8c8c96;
+
+  --chart-1: #5eead4;
+  --chart-2: #8c8c96;
+  --chart-3: #3a3a41;
+  --chart-4: #26262b;
+  --chart-5: #b8b8c0;
+  --sidebar: #0c0c0e;
+  --sidebar-foreground: #f4f4f5;
+  --sidebar-primary: #f4f4f5;
+  --sidebar-primary-foreground: #050505;
+  --sidebar-accent: #131316;
+  --sidebar-accent-foreground: #f4f4f5;
+  --sidebar-border: #26262b;
+  --sidebar-ring: #5eead4;
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
-    }
-  body {
-    @apply bg-background text-foreground;
-    }
+    @apply border-border;
+  }
+
   html {
-    @apply font-sans;
-    }
+    @apply font-mono;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background font-sans text-foreground antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Plan 3.1: ligatures off in prose. Mono ligatures read as noise. */
+  body {
+    font-feature-settings:
+      "liga" 0,
+      "calt" 0;
+  }
+
+  /* Plan 9: one focus treatment everywhere. :where() keeps specificity at 0
+     so a component can still override it deliberately. */
+  :where(
+    a,
+    button,
+    input,
+    select,
+    textarea,
+    summary,
+    [tabindex]
+  ):focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+  }
+
+  .skip-link {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    padding: 8px 16px;
+    margin: 8px;
+    font-size: 0.8125rem;
+    color: var(--brand-foreground);
+    background: var(--brand);
+    border-radius: var(--radius);
+    transform: translateY(-200%);
+  }
+
+  .skip-link:focus {
+    transform: translateY(0);
+  }
+}
+
+/* Plan 5: kill transitions for one frame so a theme switch does not leave
+   half-transitioned elements behind. The theme toggle's icon crossfade opts
+   out via data-theme-icon, since that is the one transition meant to be seen. */
+[data-theme-switching] *:not([data-theme-icon]),
+[data-theme-switching] *::before,
+[data-theme-switching] *::after {
+  transition: none !important;
+}
+
+/* Plan 6: reduced motion removes transforms and smooth scroll. Content must
+   still be visible, so this shortens rather than hides. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Plan 7: anchor links glide instead of jumping, but only when the reader
+     has not asked for less motion. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Plan 7 nav. Under 640px the anchor row scrolls horizontally with no
+     visible scrollbar and a fade at each edge, so it reads as a strip rather
+     than as something cut off. At 640px and up the row fits, so the fade is
+     dropped rather than left fading into empty space. */
+.nav-scroll {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.nav-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+@media (max-width: 639px) {
+  .nav-scroll {
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 16px,
+      #000 calc(100% - 16px),
+      transparent
+    );
+  }
+}
+
+/* Plan 8 section reveal. The hidden state is scoped to [data-js] on <html>,
+   which the blocking script in index.html sets before first paint. Without
+   JS the attribute is absent, so every section renders at its final position
+   and nothing can be stranded invisible by a failed observer. */
+[data-js] [data-reveal] {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+[data-js] [data-reveal="shown"] {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--duration-reveal) var(--ease-out),
+    transform var(--duration-reveal) var(--ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-js] [data-reveal] {
+    transform: none;
+  }
+}
+
+/* Plan 8 nav indicator: opacity only. A bar that slides between anchors has
+   to animate width or scaleX, and width is a layout property while scaleX
+   distorts the stroke. Fading each anchor's own underline keeps it on the GPU
+   and still reads as the active section moving. */
+.nav-link-underline {
+  position: absolute;
+  right: 0.5rem;
+  bottom: 0;
+  left: 0.5rem;
+  height: 1px;
+  background-color: var(--brand);
+  opacity: 0;
+  transition: opacity 200ms var(--ease-out);
+}
+
+.nav-link-underline[data-active="true"] {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-link-underline {
+    transition-duration: 0.01ms;
+  }
+}
+
+/* Plan 3.3: fine broken lines. repeating-linear-gradient gives identical dash
+   geometry in every browser; border-style: dashed does not. */
+.rule-dashed {
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--border) 0 6px,
+    transparent 6px 10px
+  );
+}
+
+.rule-solid {
+  background-color: var(--border);
+}
+
+/* shadcn's Separator paints bg-border, so a variant has to out-specify that
+   single class or the dashes sit on top of an unbroken line. */
+[data-slot="separator"].rule-dashed {
+  background-color: transparent;
+}
+
+[data-slot="separator"].rule-solid {
+  background-color: var(--border);
+}
+
+[data-slot="separator"].rule-dashed[data-orientation="vertical"] {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--border) 0 6px,
+    transparent 6px 10px
+  );
+}
+
+/* Plan 4.2 timeline trunk. Same dash geometry as .rule-dashed, rotated to
+   vertical, and masked so the bottom end fades out to imply more to come. The
+   mask fades the dashes themselves rather than laying a transparent panel over
+   them, so the fade reads as the line running out instead of as a scrim. */
+.timeline-trunk {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--border-strong) 0 6px,
+    transparent 6px 10px
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 calc(100% - 56px),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    #000 calc(100% - 56px),
+    transparent 100%
+  );
 }

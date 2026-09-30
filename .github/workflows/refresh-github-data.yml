@@ -1,0 +1,62 @@
+# Plan 4.7. The contribution calendar is GraphQL only and needs a token, so it is
+# fetched here rather than in the browser and committed back to the repo. The
+# site then serves a static snapshot with no live API call and no token in the
+# client bundle.
+#
+# Requires a repo secret GH_STATS_TOKEN (classic PAT or fine-grained token with
+# read:user). Without it this workflow still runs: the repo metadata half works
+# off the anonymous REST API and the contribution half is skipped, so the commit
+# step simply has nothing new to commit.
+#
+# Pushing to the default branch is what triggers the redeploy. The hosting
+# provider owns that step, so nothing here builds or publishes.
+
+name: Refresh GitHub data
+
+on:
+  # 06:17 UTC rather than 06:00: scheduled jobs are queued and delayed at the
+  # top of the hour because that is when everyone else schedules theirs.
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  # Never let a manual run and a scheduled run commit over each other.
+  group: refresh-github-data
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Fetch GitHub metadata
+        env:
+          GH_STATS_TOKEN: ${{ secrets.GH_STATS_TOKEN }}
+        run: node scripts/fetch-github.mjs
+
+      - name: Commit the refreshed snapshot
+        # Only the contributions file is tracked. github-repos.json is
+        # gitignored because prebuild regenerates it on every deploy, so adding
+        # it here would fail.
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/data/generated/github-contributions.json
+          if git diff --staged --quiet; then
+            echo "GitHub data unchanged, nothing to commit."
+            exit 0
+          fi
+          git commit -m "chore: refresh GitHub contribution snapshot"
+          git push

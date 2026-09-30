@@ -1,20 +1,46 @@
-import { Button } from "@/components/ui/button"
+import { Hero } from "@/components/hero"
+import { Experience } from "@/components/experience"
+import { Projects } from "@/components/projects"
+import { TechStack } from "@/components/tech-stack"
+import { Certifications } from "@/components/certifications"
+import { Education } from "@/components/education"
+import { GitHubActivity } from "@/components/github-activity"
+import { Contact } from "@/components/contact"
+import { Nav } from "@/components/nav"
+import { Footer } from "@/components/footer"
+import { KitchenSink } from "@/components/kitchen-sink"
+import { useRevealOnScroll } from "@/lib/reveal"
+
+const showKitchenSink =
+  import.meta.env.DEV && window.location.hash === "#kitchen-sink"
 
 export function App() {
+  useRevealOnScroll()
+
   return (
-    <div className="flex min-h-svh p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h1 className="font-medium">Project ready!</h1>
-          <p>You may now add components and start building.</p>
-          <p>We&apos;ve already added the button component for you.</p>
-          <Button className="mt-2">Button</Button>
-        </div>
-        <div className="font-mono text-xs text-muted-foreground">
-          (Press <kbd>d</kbd> to toggle dark mode)
-        </div>
-      </div>
-    </div>
+    <>
+      <a className="skip-link" href="#content">
+        Skip to content
+      </a>
+      <Nav />
+      <main id="content">
+        {showKitchenSink ? (
+          <KitchenSink />
+        ) : (
+          <>
+            <Hero />
+            <Experience />
+            <Projects />
+            <TechStack />
+            <Certifications />
+            <Education />
+            <GitHubActivity />
+            <Contact />
+          </>
+        )}
+      </main>
+      <Footer />
+    </>
   )
 }
 
