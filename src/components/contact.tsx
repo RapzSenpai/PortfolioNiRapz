@@ -42,7 +42,10 @@ export function Contact() {
       index="08"
       label="Contact"
       headingId="contact"
-      className="py-24 md:py-32"
+      // One step of extra room as the closing section, so the CTA does not sit
+      // flush against the footer. Matches the base rhythm for everything above
+      // it, which is what keeps the 07 -> 08 gap identical to 02 -> 03.
+      className="py-16 md:py-20"
     >
       {!isPlaceholder(profile.cta) ? (
         <p className="text-name font-bold text-foreground">{profile.cta}</p>
